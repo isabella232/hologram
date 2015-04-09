@@ -103,6 +103,20 @@ multi-parent
       expect(output_files_by_category).to be_a Hash
     end
 
+    it 'builds a component-specific page for each component' do
+      expect(pages['background.html'][:md]).to include 'We have a few background colors'
+      expect(pages['background.html'][:md]).to_not include 'For buttons, see [the buttons docs][button]'
+      expect(pages['background.html'][:md]).to_not include 'Button styles can be applied to any element.'
+
+      expect(pages['buttonSkins.html'][:md]).to include 'For buttons, see [the buttons docs][button]'
+      expect(pages['buttonSkins.html'][:md]).to_not include 'We have a few background colors'
+      expect(pages['buttonSkins.html'][:md]).to_not include 'Button styles can be applied to any element.'
+
+      expect(pages['button.html'][:md]).to include 'Button styles can be applied to any element.'
+      expect(pages['button.html'][:md]).to_not include 'We have a few background colors'
+      expect(pages['button.html'][:md]).to_not include 'For buttons, see [the buttons docs][button]'
+    end
+
     context 'when the source has multiple paths' do
       subject(:parser) { Hologram::DocParser.new(['spec/fixtures/source/colors', 'spec/fixtures/source/components'], nil, plugins) }
 
@@ -189,7 +203,7 @@ multi-parent
 
       it 'assigns the child doc a deeper header' do
         parser.parse
-        expect(pages['base_css.html'][:md]).to include '<h2 id="otherStyle" class="styleguide">Some other style</h2>'
+        expect(pages['base_css.html'][:md]).to include '<h2 id="otherStyle" class="styleguide"><a href="otherStyle.html">Some other style</a></h2>'
       end
 
       context 'when nav_level is set to all' do

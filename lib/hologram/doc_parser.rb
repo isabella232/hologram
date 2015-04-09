@@ -172,8 +172,15 @@ module Hologram
         include_sub_nav = false
       end
 
+      md = doc_block.markdown_with_heading(depth, include_sub_nav: include_sub_nav)
+
       @pages[output_file][:blocks].push(doc_block.get_hash)
-      @pages[output_file][:md] << doc_block.markdown_with_heading(depth, include_sub_nav: include_sub_nav)
+      @pages[output_file][:md] << md
+
+      @pages["#{doc_block.name}.html"] = {
+        md: md,
+        blocks: [doc_block.get_hash]
+      }
     end
 
   end
